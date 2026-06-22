@@ -1,11 +1,11 @@
 import "./App.css";
-import { Button } from "./components/ui/button";
-import Login from "./features/auth/Login";
+import HomePage from "./features/auth/HomePage";
+import LoginForm from "./features/auth/LoginForm";
 
 function App() {
   return (
     <>
-      <Login />
+      <HomePage />
     </>
   );
 }
