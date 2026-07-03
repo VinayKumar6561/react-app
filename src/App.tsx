@@ -1,6 +1,5 @@
 import "./App.css";
-import HomePage from "./features/auth/HomePage";
-import LoginForm from "./features/auth/LoginForm";
+import HomePage from "./features/auth/components/HomePage";
 
 function App() {
   return (

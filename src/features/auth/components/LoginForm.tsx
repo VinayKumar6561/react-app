@@ -1,8 +1,8 @@
-import { useForm, Controller } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowRight } from "lucide-react";
 
-import { loginSchema } from "./schemas/loginSchema";
+import { loginSchema, type LoginFormData } from "../schemas/loginSchema";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -12,6 +12,8 @@ import {
   FieldError,
   FieldLabel,
 } from "@/components/ui/field";
+import axios from "axios";
+import { login } from "../services/authService";
 
 type LoginFormProps = {
   onSwitch: () => void;
@@ -27,10 +29,12 @@ function LoginForm({ onSwitch }: LoginFormProps) {
     },
   });
 
-  const onSubmit = async (data: any) => {
+  const { errors } = form.formState;
+
+  const onSubmit = async (data: LoginFormData) => {
     try {
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-      alert(`Welcome back, ${data.username}!`);
+      const response=await login(data);
+      console.log("Login response:", response.data);
     } catch (error) {
       console.error(error);
     }
@@ -50,65 +54,55 @@ function LoginForm({ onSwitch }: LoginFormProps) {
 
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
         <FieldGroup className="space-y-4">
-          <Controller
-            name="username"
-            control={form.control}
-            render={({ field, fieldState }) => (
-              <Field data-invalid={fieldState.invalid}>
-                <FieldLabel className="text-xs font-semibold text-slate-600 uppercase tracking-wider">
-                  Username
-                </FieldLabel>
+          {/* Username */}
+          <Field data-invalid={!!errors.username}>
+            <FieldLabel className="text-xs font-semibold text-slate-600 uppercase tracking-wider">
+              Username
+            </FieldLabel>
 
-                <Input
-                  {...field}
-                  id="login-username"
-                  type="text"
-                  placeholder="vkurumella"
-                  autoComplete="off"
-                  className="h-11 border-slate-200 focus-visible:ring-blue-600 bg-slate-50/30 focus:bg-white transition-all rounded-lg"
-                  aria-invalid={fieldState.invalid}
-                />
+            <Input
+              {...form.register("username")}
+              id="login-username"
+              type="text"
+              placeholder="vkurumella"
+              autoComplete="off"
+              className="h-11 border-slate-200 focus-visible:ring-blue-600 bg-slate-50/30 focus:bg-white transition-all rounded-lg"
+              aria-invalid={!!errors.username}
+            />
 
-                {fieldState.invalid && (
-                  <FieldError errors={[fieldState.error]} />
-                )}
-              </Field>
+            {errors.username && (
+              <FieldError errors={[errors.username]} />
             )}
-          />
+          </Field>
 
-          <Controller
-            name="password"
-            control={form.control}
-            render={({ field, fieldState }) => (
-              <Field data-invalid={fieldState.invalid}>
-                <div className="flex items-center justify-between">
-                  <FieldLabel className="text-xs font-semibold text-slate-600 uppercase tracking-wider">
-                    Password
-                  </FieldLabel>
+          {/* Password */}
+          <Field data-invalid={!!errors.password}>
+            <div className="flex items-center justify-between">
+              <FieldLabel className="text-xs font-semibold text-slate-600 uppercase tracking-wider">
+                Password
+              </FieldLabel>
 
-                  <a
-                    href="#forgot"
-                    className="text-xs font-medium text-blue-600 hover:underline"
-                  >
-                    Forgot password?
-                  </a>
-                </div>
+              <a
+                href="#forgot"
+                className="text-xs font-medium text-blue-600 hover:underline"
+              >
+                Forgot password?
+              </a>
+            </div>
 
-                <Input
-                  {...field}
-                  id="login-password"
-                  type="password"
-                  placeholder="••••••••"
-                  className="h-11 border-slate-200 focus-visible:ring-blue-600 bg-slate-50/30 focus:bg-white transition-all rounded-lg"
-                  aria-invalid={fieldState.invalid}
-                />
+            <Input
+              {...form.register("password")}
+              id="login-password"
+              type="password"
+              placeholder="••••••••"
+              className="h-11 border-slate-200 focus-visible:ring-blue-600 bg-slate-50/30 focus:bg-white transition-all rounded-lg"
+              aria-invalid={!!errors.password}
+            />
 
-                {fieldState.invalid && (
-                  <FieldError errors={[fieldState.error]} />
-                )}
-              </Field>
+            {errors.password && (
+              <FieldError errors={[errors.password]} />
             )}
-          />
+          </Field>
         </FieldGroup>
 
         <Button

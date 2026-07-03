@@ -2,9 +2,10 @@
 
 import { useState } from "react";
 import { ShieldCheck, Sparkles } from "lucide-react";
-
-import LoginForm from "./LoginForm";
 import RegisterForm from "./RegisterForm";
+import LoginForm from "./LoginForm";
+
+
 
 export default function HomePage() {
   const [showRegister, setShowRegister] = useState(false);
