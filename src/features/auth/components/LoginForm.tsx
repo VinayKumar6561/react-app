@@ -12,6 +12,7 @@ import {
   FieldError,
   FieldLabel,
 } from "@/components/ui/field";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { login } from "../services/authService";
 
@@ -28,13 +29,18 @@ function LoginForm({ onSwitch }: LoginFormProps) {
       password: "",
     },
   });
+  const navigate = useNavigate();
 
   const { errors } = form.formState;
 
   const onSubmit = async (data: LoginFormData) => {
     try {
-      const response=await login(data);
-      console.log("Login response:", response.data);
+      const response = await login(data);
+      localStorage.setItem("accessToken", response.accessToken);
+
+      localStorage.setItem("refreshToken", response.refreshToken);
+      navigate("/user");
+      console.log("Logged in", response.user);
     } catch (error) {
       console.error(error);
     }
@@ -70,9 +76,7 @@ function LoginForm({ onSwitch }: LoginFormProps) {
               aria-invalid={!!errors.username}
             />
 
-            {errors.username && (
-              <FieldError errors={[errors.username]} />
-            )}
+            {errors.username && <FieldError errors={[errors.username]} />}
           </Field>
 
           {/* Password */}
@@ -99,9 +103,7 @@ function LoginForm({ onSwitch }: LoginFormProps) {
               aria-invalid={!!errors.password}
             />
 
-            {errors.password && (
-              <FieldError errors={[errors.password]} />
-            )}
+            {errors.password && <FieldError errors={[errors.password]} />}
           </Field>
         </FieldGroup>
 
